@@ -1,0 +1,20 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+
+    - name: create docker image using war file
+      command: docker build -t test-image:latest .
+      args:
+        chdir: /opt/docker
+
+    - name: create tag to image
+      command: docker tag test-image meltonmajor/test-image
+
+    - name: push image on to dockerhub
+      command: docker push meltonmajor/test-image
+
+    - name: remove docker images from ansible server
+      command: docker rmi tomcat test-image:latest meltonmajor/test-image
+      ignore_errors: yes
